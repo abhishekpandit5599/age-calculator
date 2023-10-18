@@ -1,19 +1,37 @@
 import { age_calculator_backend } from "../../declarations/age_calculator_backend";
 
-document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const button = e.target.querySelector("button");
+const calculateButton = document.getElementById('calculate-button');
+const result = document.getElementById('result');
 
-  const name = document.getElementById("name").value.toString();
+calculateButton.addEventListener('click', async () => {
+  try {
+    result.textContent = '';
+    const birthTime = new Date(document.getElementById('birthdate').value);
+    let currentTime = new Date();
 
-  button.setAttribute("disabled", true);
+    let currentYear = currentTime.getFullYear();
+    let birthYear = birthTime.getFullYear();
+    let currentMonth = currentTime.getMonth();
+    let birthMonth = birthTime.getMonth();
+    let currentDate = currentTime.getDate();
+    let birthDate = birthTime.getDate();
 
-  // Interact with foo actor, calling the greet method
-  const greeting = await age_calculator_backend.greet(name);
+    let currentData = {
+      date: currentDate,
+      month: currentMonth,
+      year: currentYear
+    }
 
-  button.removeAttribute("disabled");
+    let birthData = {
+      date: birthDate,
+      month: birthMonth,
+      year: birthYear
+    }
 
-  document.getElementById("greeting").innerText = greeting;
+    let data = await age_calculator_backend.ageCalculate(currentData, birthData);
 
-  return false;
+    result.textContent = `${data.year} years ${data.month} months ${data.day} days`;
+  } catch (error) {
+    result.textContent = error;
+  }
 });
